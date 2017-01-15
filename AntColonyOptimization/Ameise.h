@@ -25,7 +25,7 @@ private:
 	std::string get_direction_of_last_area();
 	void move();
 	Area* check_food(Area* areaptr);
-	Area* checkFoodSourrounding(); //Return Area* (Futter-Location) falls Futter in Umgebung, ansonsten nullptr
+	Area* checkFoodSurrounding(); //Return Area* (Futter-Location) falls Futter in Umgebung, ansonsten nullptr
 	void take_food(Futter *futterptr);
 	void reduceLifeTime();
 	void unloadFood();
