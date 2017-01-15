@@ -165,10 +165,11 @@ void Ameise::move() {
 
 		//ToDo: Pheromonspureinfluss auf die Futtersuche Bewegung abbilden.
 
-		//Wenn der Backtrack-stack leer ist, diesen mit einem zufaellig gewaehlten Wert auffuellen.
+		//Fall: Wir sind am Ameisenhuegel, der backtack_stack ist daher noch leer!
 		if (backtrack_stack.empty() == 1) {
 			
 			//So lange eine Richtung wuerfeln, bis eine gueltige gewaehlt wird. (Fall: Ameisenhuegel steht am Rand...)
+			//Alle Richtungen sind hier gleich wahrscheinlich, da wir am Ameisenhuegel stehen!
 			do {
 					int except_randval = rand() % 4;
 					nextDirection = position->getRichtung(chosenDirectionVector[except_randval]);
