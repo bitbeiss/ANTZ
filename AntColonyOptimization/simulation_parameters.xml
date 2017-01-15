@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<SimulationParameters>
+  <Ant>
+    <Lifetime>50</Lifetime>
+    <FoodCapacity>1</FoodCapacity>
+    <ForwardProbability>50</ForwardProbability>
+    <LeftProbability>25</LeftProbability>
+    <RightProbability>25</RightProbability>
+    <BackwardProbability>0</BackwardProbability>
+  </Ant>
+  <Environment>
+    <EnvironmentSizeCols> 3 </EnvironmentSizeCols>
+    <EnvironmentSizeRows> 3 </EnvironmentSizeRows>
+  </Environment>
+  <Startvalues>
+    <AnthillFood> 10 </AnthillFood>
+    <FoodQuantity> 30 </FoodQuantity>
+  </Startvalues>
+</SimulationParameters>
