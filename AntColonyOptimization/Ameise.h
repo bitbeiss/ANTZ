@@ -1,6 +1,7 @@
 #pragma once
 //#include "Area.h"
 #include "Item.h"
+#include <cmath>
 #include <stack>
 
 class Area;

@@ -167,6 +167,29 @@ void Ameise::move() {
 			}
 
 			//ToDo: Pheromonspureinfluss auf die Futtersuche Bewegung abbilden.
+			long pheromon_levels[3];
+			long pheromon_levels_verrechnet[3];
+			long sum=0;
+			long tmp;
+			int wurzel_faktor = 10;
+			float einfluss_faktor = 0.7;
+			for (int i = 0; i < 3; i++) {
+				pheromon_levels[i] = this->position->getRichtung(chosenDirectionVector[i])->getPheromone();
+			}
+			for (int j = 0; i < 3; i++) {
+				//Daempfung beim Einfluss sehr grosser Pheromon Mengen
+				pheromon_levels_verrechnet[j] = sqrt(pheromon_levels[j] + wurzel_faktor)*einfluss_faktor;
+				sum += pheromon_levels_verrechnet[j];
+			}
+			for (int t = 0; t < 3; t++) {
+				tmp = pheromon_levels_verrechnet[t];
+				//W-keiten auf 1 normieren
+				pheromon_levels_verrechnet[t] = (tmp/sum);
+			}
+
+			//Errechnete Pheromoneinfluesse auf parametrisierte Bewegungswahrscheinlichkeiten verrechen
+
+
 
 			//Fall: Wir sind am Ameisenhuegel, der backtack_stack ist daher noch leer!
 			if (backtrack_stack.empty() == 1) {
