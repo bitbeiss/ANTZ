@@ -168,17 +168,15 @@ void Ameise::move() {
 
 			//ToDo: Pheromonspureinfluss auf die Futtersuche Bewegung abbilden.
 			//was-todo: pheromone in der umgebung erfassen
-			long double pheromon_levels[3];
-			long double pheromon_levels_verrechnet[3];
+			long double pheromon_levels[4];
+			long double pheromon_levels_verrechnet[4];
 			long double sum=0;
 			long double tmp;
 			long double wurzel_faktor = 10;
 			long double einfluss_faktor = 0.7;
 			//Richtungen bereits an Ameisensicht angepasst (durch "chosenDirectionVector")
-			for (int i = 0; i < 3; i++) {
-				pheromon_levels[i] = this->position->getPheromone(this->position->getRichtung(chosenDirectionVector[i]));
-			}
 			for (int j = 0; j < 3; j++) {
+				pheromon_levels[j] = this->position->getPheromone(this->position->getRichtung(chosenDirectionVector[j]));
 				//Daempfung beim Einfluss sehr grosser Pheromon Mengen
 				pheromon_levels_verrechnet[j] = sqrt(pheromon_levels[j] + wurzel_faktor)*einfluss_faktor;
 				sum += pheromon_levels_verrechnet[j];
@@ -190,21 +188,12 @@ void Ameise::move() {
 				pheromon_levels_verrechnet[t] = (tmp/sum);
 			}
 
-			//Errechnete Pheromoneinfluesse auf parametrisierte Bewegungswahrscheinlichkeiten verrechen
+			//Errechnete Pheromoneinfluesse auf parametrisierte Bewegungswahrscheinlichkeiten verrechen + Benamsung verbessern.
 			//vorwaerts nicht erforderlich (ergibt sich aus den anderen W-keiten)
-			pheromon_levels_verrechnet[0] = data.ForwardProbability*pheromon_levels_verrechnet[0];
-			//rueckwaerts
-			pheromon_levels_verrechnet[1] = data.BackwardProbability*pheromon_levels_verrechnet[1];
-			//links
-			pheromon_levels_verrechnet[2] = data.LeftProbability*pheromon_levels_verrechnet[2];
-			//rechts
-			pheromon_levels_verrechnet[3] = data.RightProbability*pheromon_levels_verrechnet[3];
-
-			//Benamsungen verbessern
-			long double ForwardProbability = pheromon_levels_verrechnet[0];
-			long double BackwardProbability = pheromon_levels_verrechnet[1];
-			long double LeftProbability = pheromon_levels_verrechnet[2];
-			long double RightProbability = pheromon_levels_verrechnet[3];
+			long double ForwardProbability = data.ForwardProbability*pheromon_levels_verrechnet[0]; //rueckwaerts
+			long double BackwardProbability = data.BackwardProbability*pheromon_levels_verrechnet[1]; //links
+			long double LeftProbability = data.LeftProbability*pheromon_levels_verrechnet[2];
+			long double RightProbability = pheromon_levels_verrechnet[3] = data.RightProbability*pheromon_levels_verrechnet[3]; //rechts
 
 			//Fall: Wir sind am Ameisenhuegel, der backtack_stack ist daher noch leer!
 			if (backtrack_stack.empty() == 1) {

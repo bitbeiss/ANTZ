@@ -90,24 +90,28 @@ void Simulation::ActAll() {
 
 	//Erstellen des Listen-Iterators
 	std::list<Item*>::iterator it;
+	std::list<Item*>Gesamt_Item_ListeT = Gesamt_Item_Liste; //Deep Kopie der Pointer; Liste damit konstant/unabhaengig von aenderungen in den Iterationen
 
 	//Die Gesaamt_Item_Liste der Simulation wird in folgender Reihenfolge abgearbeitet:
 	//1. Ameisenhügel (Erzeugen Ameisen, wenn Futter vorhanden)
 	//2. Area's (Lassen die Pheromonspur verdampfen, wenn vorhanden)
 	//3. Ameisen (Bewegung, Futter aufnehmen und - ablegen)
 
+	//toDo: Achtung!!! Wir haben ein Problem mit einer Liste, die veraendert wird, waehrend wir durch sie iterieren, das fuert zu einer Endlosschleife,
+	//da in jedem durchlauf wieder eine Ameise hinzugefuegt wird. Der Iterator ist jedenfalls nicht mehr valide!!!!
 	//Die Gesamt_Item_Liste wird nach Ameisenhügeln durchsucht, für die jeweils act() aufgerufen wird
-	long int counter = 0;
-	for (it = Gesamt_Item_Liste.begin(); it != Gesamt_Item_Liste.end(); it++) {
+	//for (size_t i = 0; i < Gesamt_Item_Liste.size();i++) {
+	long int counter=0;
+	for (it = Gesamt_Item_ListeT.begin(); it != Gesamt_Item_ListeT.end(); ++it) {
 		if(typeid(*(*it))==typeid(Ameisenhuegel)){
 			Ameisenhuegel* tmpAnthill = dynamic_cast<Ameisenhuegel*>(*it);
 			tmpAnthill->act();
-			std::cout << "tmpAnthill->act()" << "Zaehler: "<< counter++ << "Typ in Liste: " << typeid(*(*it)).name() << std::endl;
+			std::cout << "tmpAnthill->act()" << "Zaehler: "<< ++counter << " Typ in Liste: " << typeid(*(*it)).name() << std::endl;
 		}
 	}
 
 	//Die Gesamt_Item_Liste wird nach Area's durchsucht, für die jeweils act() aufgerufen wird
-	for (it = Gesamt_Item_Liste.begin(); it != Gesamt_Item_Liste.end(); it++) {
+	for (it = Gesamt_Item_ListeT.begin(); it != Gesamt_Item_ListeT.end(); ++it) {
 				if (typeid(*(*it)) == typeid(Area)) {
 			Area* tmpArea = dynamic_cast<Area*>(*it);
 			tmpArea->act();
@@ -116,7 +120,7 @@ void Simulation::ActAll() {
 	}
 
 	//Die Gesamt_Item_Liste wird nach Ameisen durchsucht, für die jeweils act() aufgerufen wird
-	for (it = Gesamt_Item_Liste.begin(); it != Gesamt_Item_Liste.end(); it++) {
+	for (it = Gesamt_Item_ListeT.begin(); it != Gesamt_Item_ListeT.end(); ++it) {
 		if (typeid(*(*it)) == typeid(Ameise)) {
 			Ameise* tmpAnt = dynamic_cast<Ameise*>(*it);
 			tmpAnt->act();

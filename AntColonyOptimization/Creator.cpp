@@ -89,7 +89,7 @@ Item *Creator::createItem(std::string itemtype)
 		int randy = 1 + std::rand() % (currentSimulation->Colls);	//Zufallszahl fuer Spalten
 
 		//While-Schleife soll so lange ausgefuehrt werden, bis die Position von currentSimulation (Futter) und Anthill unterschiedlich sind
-		while (currentSimulation->getSpielfeldArea(randx, randy) == tmpAnthill->position) {
+ 		while (currentSimulation->getSpielfeldArea(randx, randy) == tmpAnthill->position) {
 
 			int randx = 1 + std::rand() % (currentSimulation->Rows);	//Zufallszahl fuer Reihen
 			int randy = 1 + std::rand() % (currentSimulation->Colls);	//Zufallszahl fuer Spalten
