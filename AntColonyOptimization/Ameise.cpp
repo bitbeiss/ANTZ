@@ -167,12 +167,14 @@ void Ameise::move() {
 			}
 
 			//ToDo: Pheromonspureinfluss auf die Futtersuche Bewegung abbilden.
+			//was-todo: pheromone in der umgebung erfassen
 			long pheromon_levels[3];
 			long pheromon_levels_verrechnet[3];
 			long sum=0;
 			long tmp;
 			int wurzel_faktor = 10;
 			float einfluss_faktor = 0.7;
+			//Richtungen bereits an Ameisensicht angepasst (durch "chosenDirectionVector")
 			for (int i = 0; i < 3; i++) {
 				pheromon_levels[i] = this->position->getRichtung(chosenDirectionVector[i])->getPheromone();
 			}
@@ -181,6 +183,7 @@ void Ameise::move() {
 				pheromon_levels_verrechnet[j] = sqrt(pheromon_levels[j] + wurzel_faktor)*einfluss_faktor;
 				sum += pheromon_levels_verrechnet[j];
 			}
+			//Die gefundenen Quantitaeten gewichten und in W-keiten umrechnen
 			for (int t = 0; t < 3; t++) {
 				tmp = pheromon_levels_verrechnet[t];
 				//W-keiten auf 1 normieren
@@ -188,8 +191,20 @@ void Ameise::move() {
 			}
 
 			//Errechnete Pheromoneinfluesse auf parametrisierte Bewegungswahrscheinlichkeiten verrechen
+			//vorwaerts nicht erforderlich (ergibt sich aus den anderen W-keiten)
+			pheromon_levels_verrechnet[0] = data.ForwardProbability*pheromon_levels_verrechnet[0];
+			//rueckwaerts
+			pheromon_levels_verrechnet[1] = data.BackwardProbability*pheromon_levels_verrechnet[1];
+			//links
+			pheromon_levels_verrechnet[2] = data.LeftProbability*pheromon_levels_verrechnet[2];
+			//rechts
+			pheromon_levels_verrechnet[3] = data.RightProbability*pheromon_levels_verrechnet[3];
 
-
+			//Benamsungen verbessern
+			float ForwardProbability = pheromon_levels_verrechnet[0];
+			float BackwardProbability = pheromon_levels_verrechnet[1];
+			float LeftProbability = pheromon_levels_verrechnet[2];
+			float RightProbability = pheromon_levels_verrechnet[3];
 
 			//Fall: Wir sind am Ameisenhuegel, der backtack_stack ist daher noch leer!
 			if (backtrack_stack.empty() == 1) {
@@ -204,33 +219,26 @@ void Ameise::move() {
 			}
 			else {
 				//So lange eine neue Richtung suchen, bis ein gueltiger Zeiger zurueckgegeben wird. (oder  erreicht ist)
-
-				//Nach Pheromonen auf den umliegenden Feldern suchen
-
-				//Die gefundenen Quantitaeten gewichten und in W-keiten umrechnen
-
-				//todo: pheromone in der umgebung erfassen
-
 				double retry_counter = 0;
-				while (nextDirection == nullptr || data.MaximumMovementRetries >= retry_counter) {
+				while (nextDirection == nullptr || data.MaximumMovementRetries > retry_counter) {
 
-					if (randval <= data.BackwardProbability) {
+					if (randval <= BackwardProbability) {
 						nextDirection = backtrack_stack.top();    // waere getRichtung(chosenDirectionVector[1]
 					}
 					//nach links
-					else if (randval <= data.LeftProbability + data.BackwardProbability && randval > data.BackwardProbability) {
+					else if (randval <= LeftProbability + BackwardProbability && randval > BackwardProbability) {
 						nextDirection = position->getRichtung(chosenDirectionVector[2]);
 					}
 					//nach rechts
-					else if (randval <= data.LeftProbability + data.RightProbability + data.BackwardProbability && randval > data.BackwardProbability + data.LeftProbability) {
+					else if (randval <= LeftProbability + RightProbability + BackwardProbability && randval > BackwardProbability + LeftProbability) {
 						nextDirection = position->getRichtung(chosenDirectionVector[3]);
 					}
 					//gerade aus
-					else if (randval > data.LeftProbability + data.RightProbability + data.BackwardProbability) {
+					else if (randval > LeftProbability + RightProbability + BackwardProbability) {
 						nextDirection = position->getRichtung(chosenDirectionVector[0]);
 					}
 					retry_counter++;
-					if (retry_counter >= data.MaximumMovementRetries) std::cerr << "Warning: Maximum retries of ant movement reached. Ant will not move in this turn.";
+					if (retry_counter == data.MaximumMovementRetries) std::cerr << "Warning: Maximum retries of ant movement reached. Ant will not move in this turn.";
 				}
 			}
 		}
