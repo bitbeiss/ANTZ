@@ -97,10 +97,12 @@ void Simulation::ActAll() {
 	//3. Ameisen (Bewegung, Futter aufnehmen und - ablegen)
 
 	//Die Gesamt_Item_Liste wird nach Ameisenhügeln durchsucht, für die jeweils act() aufgerufen wird
+	long int counter = 0;
 	for (it = Gesamt_Item_Liste.begin(); it != Gesamt_Item_Liste.end(); it++) {
 		if(typeid(*(*it))==typeid(Ameisenhuegel)){
 			Ameisenhuegel* tmpAnthill = dynamic_cast<Ameisenhuegel*>(*it);
 			tmpAnthill->act();
+			std::cout << "tmpAnthill->act()" << "Zaehler: "<< counter++ << "Typ in Liste: " << typeid(*(*it)).name() << std::endl;
 		}
 	}
 
@@ -109,6 +111,7 @@ void Simulation::ActAll() {
 				if (typeid(*(*it)) == typeid(Area)) {
 			Area* tmpArea = dynamic_cast<Area*>(*it);
 			tmpArea->act();
+			std::cout << "tmpArea->act()" << std::endl;
 		}
 	}
 
@@ -117,6 +120,7 @@ void Simulation::ActAll() {
 		if (typeid(*(*it)) == typeid(Ameise)) {
 			Ameise* tmpAnt = dynamic_cast<Ameise*>(*it);
 			tmpAnt->act();
+			std::cout << "tmpAnt->act()" << std::endl;
 		}
 	}
 

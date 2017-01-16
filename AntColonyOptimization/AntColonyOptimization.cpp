@@ -15,6 +15,7 @@
 #include "Parameter.h"
 #include <time.h>
 
+const int verbose = 1;
 
 int main(void) {
 
@@ -25,16 +26,15 @@ int main(void) {
 	std::cout << "Pointer " << Welt << std::endl;
 	Welt->create_environment(data.EnvironmentSizeCols,data.EnvironmentSizeRows);
 
-	//Demo lines
+	//Grundlegende Dinge im Ameisen Universum erschaffen...
 	Creator *kp = Creator::getInstance();			//statischer Funktionsaufruf, Doppelpunkt verwenden!
 	kp->createItem("Anthill");
-	kp->createItem("Ant");
 	kp->createItem("Food");
 	
-
 	long double cycle_counter;
 	for (long double NumberOfSimulations_counter = 0; NumberOfSimulations_counter < data.NumberOfSimulations; NumberOfSimulations_counter++) {
 			for (cycle_counter = 0; cycle_counter < data.MaxCycles; cycle_counter++) {
+				if (verbose) std::cout << "Runde #:" << cycle_counter << std::endl;
 				Welt->ActAll();
 			}
 		std::cout << "cycles survived: " << cycle_counter << std::endl;

@@ -19,7 +19,7 @@ public:
 	long getPheromone(Area* AntPosition);
 
 private:
-	long long Duft_Markierungs_Zaheler;
+	//long long Duft_Markierungs_Zaehler;
 	Area* Nord;
 	Area* Sued;
 	Area* Ost;
