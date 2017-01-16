@@ -168,17 +168,17 @@ void Ameise::move() {
 
 			//ToDo: Pheromonspureinfluss auf die Futtersuche Bewegung abbilden.
 			//was-todo: pheromone in der umgebung erfassen
-			long pheromon_levels[3];
-			long pheromon_levels_verrechnet[3];
-			long sum=0;
-			long tmp;
-			int wurzel_faktor = 10;
-			float einfluss_faktor = 0.7;
+			long double pheromon_levels[3];
+			long double pheromon_levels_verrechnet[3];
+			long double sum=0;
+			long double tmp;
+			long double wurzel_faktor = 10;
+			long double einfluss_faktor = 0.7;
 			//Richtungen bereits an Ameisensicht angepasst (durch "chosenDirectionVector")
 			for (int i = 0; i < 3; i++) {
-				pheromon_levels[i] = this->position->getRichtung(chosenDirectionVector[i])->getPheromone();
+				pheromon_levels[i] = this->position->getPheromone(this->position->getRichtung(chosenDirectionVector[i]));
 			}
-			for (int j = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
 				//Daempfung beim Einfluss sehr grosser Pheromon Mengen
 				pheromon_levels_verrechnet[j] = sqrt(pheromon_levels[j] + wurzel_faktor)*einfluss_faktor;
 				sum += pheromon_levels_verrechnet[j];
@@ -201,10 +201,10 @@ void Ameise::move() {
 			pheromon_levels_verrechnet[3] = data.RightProbability*pheromon_levels_verrechnet[3];
 
 			//Benamsungen verbessern
-			float ForwardProbability = pheromon_levels_verrechnet[0];
-			float BackwardProbability = pheromon_levels_verrechnet[1];
-			float LeftProbability = pheromon_levels_verrechnet[2];
-			float RightProbability = pheromon_levels_verrechnet[3];
+			long double ForwardProbability = pheromon_levels_verrechnet[0];
+			long double BackwardProbability = pheromon_levels_verrechnet[1];
+			long double LeftProbability = pheromon_levels_verrechnet[2];
+			long double RightProbability = pheromon_levels_verrechnet[3];
 
 			//Fall: Wir sind am Ameisenhuegel, der backtack_stack ist daher noch leer!
 			if (backtrack_stack.empty() == 1) {
@@ -212,6 +212,7 @@ void Ameise::move() {
 				//So lange eine Richtung wuerfeln, bis eine gueltige gewaehlt wird. (Fall: Ameisenhuegel steht am Rand...)
 				//Alle Richtungen sind hier gleich wahrscheinlich, da wir am Ameisenhuegel stehen!
 				//was-todo: Würfel für start/Ameisenhügel (alle Richtungen gleich wahrscheinlich)
+				int except_randval=0;
 				do {
 					int except_randval = rand() % 4;
 					nextDirection = position->getRichtung(chosenDirectionVector[except_randval]);
@@ -220,7 +221,9 @@ void Ameise::move() {
 			else {
 				//So lange eine neue Richtung suchen, bis ein gueltiger Zeiger zurueckgegeben wird. (oder  erreicht ist)
 				double retry_counter = 0;
+				int randval=0;
 				while (nextDirection == nullptr || data.MaximumMovementRetries > retry_counter) {
+					randval = rand() % 4;
 
 					if (randval <= BackwardProbability) {
 						nextDirection = backtrack_stack.top();    // waere getRichtung(chosenDirectionVector[1]
