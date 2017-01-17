@@ -54,7 +54,10 @@ Area *Ameise::check_food(Area* areaptr) {
 	std::list<Item*>::iterator it = areaptr->ItemList.begin();
 	for (; it != areaptr->ItemList.end(); it++)	{
 		if (typeid(**it) == typeid(Futter)) {
-			//Falls Futter vorhanden -> Rückgabe des Area-Pointers
+			//Falls Futter vorhanden 
+			//->mitehmen
+			this->take_food(dynamic_cast<Futter*>(*it));
+			//-> Rückgabe des Area-Pointers
 			return areaptr;
 		}
 	}
@@ -187,7 +190,7 @@ void Ameise::move() {
 				else {
 					pheromon_levels[j] = 0.25; //wenn kein gueltiges Feld in diese Richtung liegt, gibt es dort auch keine Pheromon...
 				}
-				std::cout << "Pheromon level gefunden: " << pheromon_levels[j] << std::endl;
+				//std::cout << "Pheromon level gefunden: " << pheromon_levels[j] << std::endl;
 				//Daempfung beim Einfluss sehr grosser Pheromon Mengen
 				pheromon_levels_verrechnet[j] = sqrt(pheromon_levels[j] + wurzel_faktor)*einfluss_faktor;
 				sum += pheromon_levels_verrechnet[j];
@@ -261,17 +264,17 @@ void Ameise::move() {
 		}
 	}
 	position = nextDirection;
-	std::cout << "Ameise wandert..." << std::endl;
+	//std::cout << "Ameise wandert..." << std::endl;
 
 	
 }
 
 
-
-
 void Ameise::take_food(Futter * futterptr) {
 	//Futter in die Quantitaetenvariable der Ameise eintragen
+	
 	if (futterptr->Naehrstoffe > 1) {
+		std::cout << "Futter gefunden!" << std::endl;
 		this->food_quantity_loaded = food_quantity_loaded + 1;
 		futterptr->Naehrstoffe = futterptr->Naehrstoffe - 1;
 	}
@@ -289,7 +292,7 @@ void Ameise::reduceLifeTime()
 	else if(this->life_time < 0 || this->life_time == 0){
 		Simulation *currentSimulation = Simulation::getInstance(); //Aus Globaler Liste löschen
 		currentSimulation->Gesamt_Item_Liste_entf.push_back(this); //Aus dem Speicher löschen (in Austragliste schreiben, spaeter loeschen)
-		std::cout << "Ameise gestorben!" << std::endl;
+		//std::cout << "Ameise gestorben!" << std::endl;
 		delete(this);
 		return;
 	}

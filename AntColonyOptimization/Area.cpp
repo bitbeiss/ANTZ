@@ -43,7 +43,7 @@ void Area::setRichtung(Area* ein, std::string Richtung) {
 //Verringert jede Runde den Pheromonwert auf dem Area, Werte aus Parameter
 void Area::act() {
 	Parameter data;
-	if (pheromone > 0) {
+	if (pheromone >= data.PheromoneEvaporate ) {
 		pheromone = pheromone - data.PheromoneEvaporate;
 	}
 }

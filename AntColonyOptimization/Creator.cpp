@@ -49,7 +49,7 @@ Item *Creator::createItem(std::string itemtype)
 		currentSimulation->getSpielfeldArea(randx, randy)->ItemList.push_back(Anthill); 
 
 		AnthillReference = Anthill;
-		std::cout << "Ameisenhuegel wurde erzeugt" << std::endl;
+		//std::cout << "Ameisenhuegel wurde erzeugt" << std::endl;
 
 		return AnthillReference;
 	}
@@ -75,7 +75,7 @@ Item *Creator::createItem(std::string itemtype)
 			currentSimulation->Gesamt_Item_Liste_tmp.push_back(currentAnt);	//Eintragen der Ameise in (tmp! nach der iteration uebertragen!) Globale Liste (Simulation)
 			//tmpAnthill->position->ItemList.push_back(currentAnt);		//Eintragen der Ameise in Item Liste (Area)
 
-			std::cout << "Ameise wurde erzeugt" << std::endl;
+			//std::cout << "Ameise wurde erzeugt" << std::endl;
 			//return tmpAnthill;
 			return currentAnt;
 		}
@@ -105,7 +105,7 @@ Item *Creator::createItem(std::string itemtype)
 		currentSimulation->getSpielfeldArea(randx, randy)->ItemList.push_back(tmpFood);		//Eintragen des Futters in Item Liste (Area)
 
 		tmpFood->Naehrstoffe = data.FoodQuantity; //Startwerte fuer die Futtermenge setzten, Wert aus Parameter
-		std::cout << "Futter wurde erzeugt" << std::endl;
+		//std::cout << "Futter wurde erzeugt" << std::endl;
 		return tmpFood;
 		
 	}
