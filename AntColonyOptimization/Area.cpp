@@ -43,8 +43,11 @@ void Area::setRichtung(Area* ein, std::string Richtung) {
 //Verringert jede Runde den Pheromonwert auf dem Area, Werte aus Parameter
 void Area::act() {
 	Parameter data;
-	Area::pheromone = Area::pheromone - data.PheromoneEvaporate;
+	if (pheromone > 0) {
+		pheromone = pheromone - data.PheromoneEvaporate;
+	}
 }
+
 
 //Ameisen mit Futter legen Pheromone auf das Feld, Werte aus Parameter
 void Area::setPheromone(Area* AntPosition)
@@ -74,6 +77,6 @@ Area* Area::getRichtung(std::string ein){
 	else if(ein == "west") {
 		return West;
 	}
-	else return 0;
+	else return nullptr;
 }
 

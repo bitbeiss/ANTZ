@@ -184,8 +184,10 @@ void Ameise::move() {
 				if (this->position->getRichtung(chosenDirectionVector[j]) != nullptr) {  //pruefen, ob es in die Richtung ueberhaupt ein gueltiges Area gibt.
 					pheromon_levels[j] = (long double) this->position->getPheromone(this->position->getRichtung(chosenDirectionVector[j]));
 				}
-				else pheromon_levels[j] = 0.0; //wenn kein gueltiges Feld in diese Richtung liegt, gibt es dort auch keine Pheromon...
-
+				else {
+					pheromon_levels[j] = 0.25; //wenn kein gueltiges Feld in diese Richtung liegt, gibt es dort auch keine Pheromon...
+				}
+				std::cout << "Pheromon level gefunden: " << pheromon_levels[j] << std::endl;
 				//Daempfung beim Einfluss sehr grosser Pheromon Mengen
 				pheromon_levels_verrechnet[j] = sqrt(pheromon_levels[j] + wurzel_faktor)*einfluss_faktor;
 				sum += pheromon_levels_verrechnet[j];
