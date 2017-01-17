@@ -230,7 +230,7 @@ void Ameise::move() {
 				//So lange eine neue Richtung suchen, bis ein gueltiger Zeiger zurueckgegeben wird. (oder  erreicht ist)
 				double retry_counter = 0;
 				long double randval = 0.0;
-				while (nextDirection == nullptr || data.MaximumMovementRetries > retry_counter) {
+				while (nextDirection == nullptr) {
 					randval = (rand() % 100)/100.0;
 
 					if (randval <= BackwardProbability) {
@@ -249,12 +249,17 @@ void Ameise::move() {
 						nextDirection = position->getRichtung(chosenDirectionVector[0]);
 					}
 					retry_counter++;
-					//if (retry_counter == data.MaximumMovementRetries) std::cerr << "Warning: Maximum retries of ant movement reached. Ant will not move in this turn."<<std::endl;
+					if (data.MaximumMovementRetries <= retry_counter) {    //Aussteigen, wenn zu viele Versuche erreicht werden eine gueltige Richtung zu finden.
+						std::cerr << "Warnung: Maximum an Versuchen eine gueltige Richtung zu finden erreicht.Ameise wird sich diese Runde nicht bewegen." << std::endl;
+						break;
+					}
+
 				}
 			}
 		}
 	}
 	position = nextDirection;
+	std::cout << "Ameise wandert..." << std::endl;
 
 	
 }
