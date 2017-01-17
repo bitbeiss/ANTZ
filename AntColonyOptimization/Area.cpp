@@ -52,6 +52,7 @@ void Area::act() {
 //Ameisen mit Futter legen Pheromone auf das Feld, Werte aus Parameter
 void Area::setPheromone(Area* AntPosition)
 {
+	if (AntPosition == nullptr) return;
 	Parameter data;
 	AntPosition->pheromone = AntPosition->pheromone + data.PheromoneQuantity;
 }

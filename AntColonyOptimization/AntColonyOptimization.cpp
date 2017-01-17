@@ -15,7 +15,7 @@
 #include "Parameter.h"
 #include <time.h>
 
-const int verbose = 1;
+const int verbose = 0;
 
 int main(void) {
 
@@ -31,11 +31,31 @@ int main(void) {
 	kp->createItem("Anthill");
 	kp->createItem("Food");
 	
-	long double cycle_counter;
+	long double cycle_counter=0;
+	long double futterzaehler=0;
+	long double ameisenzaehler=0;
 	for (long double NumberOfSimulations_counter = 0; NumberOfSimulations_counter < data.NumberOfSimulations; NumberOfSimulations_counter++) {
 			for (cycle_counter = 0; cycle_counter < data.MaxCycles; cycle_counter++) {
 				if (verbose==1) std::cout << "Runde #:" << cycle_counter << std::endl;
 				Welt->ActAll();
+				//Alle Ameisen gestorben oder Futter aus: Simulation beenden, Ergebnis ausgeben (Runden)
+
+				futterzaehler = 0;
+				ameisenzaehler = 0;
+				for (std::list<Item*>::iterator it = Welt->Gesamt_Item_Liste.begin(); it != Welt->Gesamt_Item_Liste.end(); it++) {
+					if (typeid(**it) == typeid(Ameise)) {
+						ameisenzaehler += 1;
+					}
+					if (typeid(**it) == typeid(Futter)) {
+						futterzaehler += dynamic_cast<Futter*>(*it)->Naehrstoffe;
+					}
+				}
+				if (futterzaehler == 0 || ameisenzaehler == 0 || cycle_counter>data.MaxCycles) {
+					std::cout << "**************Simulation beendet********************" << std::endl;
+					std::cout << "Futter verbleibend: " << futterzaehler << std::endl;
+					std::cout << "Ameisen verbleibend: " << ameisenzaehler << std::endl;
+					std::cout << "Runden:" << cycle_counter << std::endl;
+				}
 			}
 		std::cout << "cycles survived: " << cycle_counter << std::endl;
 	}

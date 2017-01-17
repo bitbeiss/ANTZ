@@ -8,30 +8,6 @@
 #include <iostream>
 #include <vector>
 
-/*
-Lieber Clemens!
-
-Hab deine Lebenszeit-Verringerung in eine Funktion gepackt, welche ich am Ende der Act aufrufe: reduceLifeTime()
-Dachte das wär schöner und praktischer so (du meintest auch wir könnten ruhig für diverse Sachen ne Funktion schreiben :P)
-
-Des weiteren habe ich den Auslade-Vorgang der Ameise, wenn diese auf den Hügel sitzt fertig gemacht
-und rufe diese Funktion ebenfalls in der Act auf: unloadFood()
-Die Funktion unloadFood() macht einfach gar nichts, wenn kein Futter geladen ist
-
-Area* check_food(Area* areaptr) bzw. Area* checkFoodSourrounding() sind ebenfalls fertig
-
-Beim Fall 1: Futter geladen hab ich auch angefangen, aber jetzt bist du grad heimgekommen :P
-Schicke dir das Projekt jetzt so wie es ist.
-
-ACHTUNG! Aufpassen bei der Reihenfolge; Die Ameise soll ja nicht losmarschieren bevor sie das Futter auslädt.
-Aufpassen auch bei der Ablage der Pheromonspur durch die Area-Funktion: void setPheromone(Area* AntPosition); 
-Diese wird grad im Fall 1 aufgerufen, bevor sie das nächste Feld aus dem backtrack_stack pop()t.
-
-LG Dan
-
-*/
-
-
 
 //Testfunktion
 void Ameise::whoAmI() {
@@ -54,7 +30,7 @@ Area *Ameise::check_food(Area* areaptr) {
 	std::list<Item*>::iterator it = areaptr->ItemList.begin();
 	for (; it != areaptr->ItemList.end(); it++)	{
 		if (typeid(**it) == typeid(Futter)) {
-			//Falls Futter vorhanden 
+			//Falls Futter vorhanden ...
 			//->mitehmen
 			this->take_food(dynamic_cast<Futter*>(*it));
 			//-> Rückgabe des Area-Pointers
@@ -127,13 +103,8 @@ void Ameise::move() {
 
 //FALL 2: WIR SUCHEN NOCH FUTTER-------------------------------------------------------------------------------------------------------------------
 	else {
-		//Der backtrack_stack ist leer (Ameise will losgehen; wir sind am Ameisenhuegel)
-		if (backtrack_stack.empty() == 1) {
-			//Ameise befindet sich im Ameisenhügel, Position wird in den backtrack_stack übernommen.
-			backtrack_stack.push(position);
-		}
+		
 
-		// hier startet die if mit dem check-food-zweig
 		//TO DO: Alle umgebenden Felder auf Futter ueberprüfen mittels bereits fertiggestellter Funktion: Area* checkFoodSurrounding();
 		//Rueckgabe bei gefundenem Futter: Area*, Rueckgabe wenn nichts gefunden: nullptr
 		Area *retval = this->checkFoodSurrounding();
@@ -142,21 +113,27 @@ void Ameise::move() {
 			nextDirection = retval;
 		}
 		else {	
+
+			if (backtrack_stack.empty() == 1) {
+				//Ameise befindet sich im Ameisenhügel, Position wird in den backtrack_stack uebernommen.
+				backtrack_stack.push(this->position);
+			}
+
 			//Fall: kein Futter in direkter Nachbarschaft... 
 
 			//Weitere Richtungen je nach Herkunftsrichtung
 			//Format: vorwaerts, rueckwaerts, links, rechts
 			std::vector<std::string> directions_from_north = {
-			"south","north","east","west"
+				"south","north","east","west"
 			};
 			std::vector<std::string> directions_from_south = {
-			"north","south","west","east"
+				"north","south","west","east"
 			};
 			std::vector<std::string> directions_from_west = {
-			"east","west","north","south"
+				"east","west","north","south"
 			};
 			std::vector<std::string> directions_from_east = {
-			"west","east","south","north"
+				"west","east","south","north"
 			};
 
 			provenience = get_direction_of_last_area();
@@ -171,72 +148,73 @@ void Ameise::move() {
 			else {
 				std::cerr << "Fehler: Richtungsvektor konnte nicht bestimmt werden. Ameise kann nicht bewegt werden.";
 				chosenDirectionVector = directions_from_south; //default Ausrichtung nach Norden, wenn nicht anders moeglich.
-				//exit(1);
+															   //exit(1);
 			}
-
-			//ToDo: Pheromonspureinfluss auf die Futtersuche Bewegung abbilden.
-			//was-todo: pheromone in der umgebung erfassen
-			long double pheromon_levels[4];
-			long double pheromon_levels_verrechnet[4];
-			long double sum=0;
-			long double tmp;
-			long double wurzel_faktor = 10;
-			long double einfluss_faktor = 0.7;
-			//Richtungen bereits an Ameisensicht angepasst (durch "chosenDirectionVector")
-			for (int j = 0; j <= 3; j++) {
-				if (this->position->getRichtung(chosenDirectionVector[j]) != nullptr) {  //pruefen, ob es in die Richtung ueberhaupt ein gueltiges Area gibt.
-					pheromon_levels[j] = (long double) this->position->getPheromone(this->position->getRichtung(chosenDirectionVector[j]));
-				}
-				else {
-					pheromon_levels[j] = 0.25; //wenn kein gueltiges Feld in diese Richtung liegt, gibt es dort auch keine Pheromon...
-				}
-				//std::cout << "Pheromon level gefunden: " << pheromon_levels[j] << std::endl;
-				//Daempfung beim Einfluss sehr grosser Pheromon Mengen
-				pheromon_levels_verrechnet[j] = sqrt(pheromon_levels[j] + wurzel_faktor)*einfluss_faktor;
-				sum += pheromon_levels_verrechnet[j];
-			}
-
-			//Die gefundenen Quantitaeten gewichten und in W-keiten umrechnen
-			for (int t = 0; t <= 3; t++) {
-				tmp = pheromon_levels_verrechnet[t];
-				//W-keiten auf 1 normieren
-				pheromon_levels_verrechnet[t] = (tmp/sum);
-			}
-
-			//Errechnete Pheromoneinfluesse auf parametrisierte Bewegungswahrscheinlichkeiten verrechen + Benamsung verbessern.
-			//vorwaerts nicht erforderlich (ergibt sich aus den anderen W-keiten)
-			long double ForwardProbability = data.ForwardProbability*pheromon_levels_verrechnet[0]; //rueckwaerts
-			long double BackwardProbability = data.BackwardProbability*pheromon_levels_verrechnet[1]; //links
-			long double LeftProbability = data.LeftProbability*pheromon_levels_verrechnet[2];
-			long double RightProbability = pheromon_levels_verrechnet[3] = data.RightProbability*pheromon_levels_verrechnet[3]; //rechts
-
-			//W-keiten auf 1 normieren.
-			sum = 0;
-			sum = ForwardProbability + BackwardProbability + LeftProbability + RightProbability;
-			ForwardProbability = ForwardProbability / sum;
-			BackwardProbability = BackwardProbability / sum;
-			LeftProbability = LeftProbability / sum;
-			RightProbability = RightProbability / sum;
-
 
 			//Fall: Wir sind am Ameisenhuegel, der backtack_stack ist daher noch leer!
+			//Ameise will losgehen;
 			if (backtrack_stack.empty() == 1) {
-
 				//So lange eine Richtung wuerfeln, bis eine gueltige gewaehlt wird. (Fall: Ameisenhuegel steht am Rand...)
 				//Alle Richtungen sind hier gleich wahrscheinlich, da wir am Ameisenhuegel stehen!
 				//was-todo: Würfel für start/Ameisenhügel (alle Richtungen gleich wahrscheinlich)
-				int except_randval=0;
+				int except_randval = 0;
 				do {
 					int except_randval = rand() % 4;
 					nextDirection = position->getRichtung(chosenDirectionVector[except_randval]);
 				} while (nextDirection == nullptr);
 			}
 			else {
+				//ToDo: Pheromonspureinfluss auf die Futtersuche Bewegung abbilden.
+				//was-todo: pheromone in der umgebung erfassen
+				long double pheromon_levels[4];
+				long double pheromon_levels_verrechnet[4];
+				long double sum = 0;
+				long double tmp;
+				long double wurzel_faktor = 10;
+				long double einfluss_faktor = 0.7;
+				//Richtungen bereits an Ameisensicht angepasst (durch "chosenDirectionVector")
+				for (int j = 0; j <= 3; j++) {
+					if (this->position->getRichtung(chosenDirectionVector[j]) != nullptr) {  //pruefen, ob es in die Richtung ueberhaupt ein gueltiges Area gibt.
+						pheromon_levels[j] = (long double) this->position->getPheromone(this->position->getRichtung(chosenDirectionVector[j]));
+					}
+					else {
+						pheromon_levels[j] = 0.25; //wenn kein gueltiges Feld in diese Richtung liegt, gibt es dort auch keine Pheromon...
+					}
+					//std::cout << "Pheromon level gefunden: " << pheromon_levels[j] << std::endl;
+					//Daempfung beim Einfluss sehr grosser Pheromon Mengen
+					pheromon_levels_verrechnet[j] = sqrt(pheromon_levels[j] + wurzel_faktor)*einfluss_faktor;
+					sum += pheromon_levels_verrechnet[j];
+				}
+
+				//Die gefundenen Quantitaeten gewichten und in W-keiten umrechnen
+				for (int t = 0; t <= 3; t++) {
+					tmp = pheromon_levels_verrechnet[t];
+					//W-keiten auf 1 normieren
+					pheromon_levels_verrechnet[t] = (tmp / sum);
+				}
+
+				//Errechnete Pheromoneinfluesse auf parametrisierte Bewegungswahrscheinlichkeiten verrechen + Benamsung verbessern.
+				//vorwaerts nicht erforderlich (ergibt sich aus den anderen W-keiten)
+				long double ForwardProbability = data.ForwardProbability*pheromon_levels_verrechnet[0]; //rueckwaerts
+				long double BackwardProbability = data.BackwardProbability*pheromon_levels_verrechnet[1]; //links
+				long double LeftProbability = data.LeftProbability*pheromon_levels_verrechnet[2];
+				long double RightProbability = pheromon_levels_verrechnet[3] = data.RightProbability*pheromon_levels_verrechnet[3]; //rechts
+
+				//W-keiten auf 1 normieren.
+				sum = 0;
+				sum = ForwardProbability + BackwardProbability + LeftProbability + RightProbability;
+				ForwardProbability = ForwardProbability / sum;
+				BackwardProbability = BackwardProbability / sum;
+				LeftProbability = LeftProbability / sum;
+				RightProbability = RightProbability / sum;
+
+
+
 				//So lange eine neue Richtung suchen, bis ein gueltiger Zeiger zurueckgegeben wird. (oder  erreicht ist)
 				double retry_counter = 0;
 				long double randval = 0.0;
 				while (nextDirection == nullptr) {
-					randval = (rand() % 100)/100.0;
+					randval = (rand() % 100) / 100.0;
 
 					if (randval <= BackwardProbability) {
 						nextDirection = backtrack_stack.top();    // waere getRichtung(chosenDirectionVector[1]
@@ -263,7 +241,7 @@ void Ameise::move() {
 			}
 		}
 	}
-	position = nextDirection;
+	this->position = nextDirection;
 	//std::cout << "Ameise wandert..." << std::endl;
 
 	
@@ -274,7 +252,7 @@ void Ameise::take_food(Futter * futterptr) {
 	//Futter in die Quantitaetenvariable der Ameise eintragen
 	
 	if (futterptr->Naehrstoffe > 1) {
-		std::cout << "Futter gefunden!" << std::endl;
+		//std::cout << "Futter gefunden!" << std::endl;
 		this->food_quantity_loaded = food_quantity_loaded + 1;
 		futterptr->Naehrstoffe = futterptr->Naehrstoffe - 1;
 	}
@@ -300,6 +278,7 @@ void Ameise::reduceLifeTime()
 
 //Entlädt die Ameise, wenn sie sich im Hügel befindet und Futter geladen hat
 void Ameise::unloadFood(){
+	if (position == nullptr) return;
 
 	//Ameise steht auf Ameisenhügel	
 	if(this->backtrack_stack.empty() == true){
@@ -328,6 +307,7 @@ Ameise::Ameise(Area *startpos) {
 	this->life_time = data.Lifetime;
 	//(Start-)position setzten, Übergabe vom Anthill
 	this->position = startpos;
+	this->food_quantity_loaded = 0;
 }
 
 //Destruktor
