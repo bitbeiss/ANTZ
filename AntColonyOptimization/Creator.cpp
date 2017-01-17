@@ -71,11 +71,12 @@ Item *Creator::createItem(std::string itemtype)
 			Ameise* currentAnt = dynamic_cast<Ameise*>(new Ameise(tmpAnthill->position));
 			currentAnt->life_time = data.Lifetime; //Lebensdauer der Ameise, Wert aus Parameter
 			
-			currentSimulation->Gesamt_Item_Liste.push_back(currentAnt);	//Eintragen der Ameise in Globale Liste (Simulation)
+			currentSimulation->Gesamt_Item_Liste_tmp.push_back(currentAnt);	//Eintragen der Ameise in (tmp! nach der iteration uebertragen!) Globale Liste (Simulation)
 			//tmpAnthill->position->ItemList.push_back(currentAnt);		//Eintragen der Ameise in Item Liste (Area)
 
 			std::cout << "Ameise wurde erzeugt" << std::endl;
-			return tmpAnthill;
+			//return tmpAnthill;
+			return currentAnt;
 		}
 		return nullptr;
 	}
@@ -85,14 +86,16 @@ Item *Creator::createItem(std::string itemtype)
 		Simulation* currentSimulation = Simulation::getInstance();
 		Ameisenhuegel* tmpAnthill = dynamic_cast<Ameisenhuegel*>(AnthillReference);
 
-		int randx = 1 + std::rand() % (currentSimulation->Rows);	//Zufallszahl fuer Reihen
-		int randy = 1 + std::rand() % (currentSimulation->Colls);	//Zufallszahl fuer Spalten
+		//nicht +1, weil ja von 0 weg bis x resp. y als pos. Angabe verwendet wird.
+		//int randx = 1 + (std::rand() % (currentSimulation->Rows));	//Zufallszahl fuer Reihen
+		int randx = (std::rand() % (currentSimulation->Rows));	//Zufallszahl fuer Reihen
+		int randy = (std::rand() % (currentSimulation->Colls));	//Zufallszahl fuer Spalten
 
 		//While-Schleife soll so lange ausgefuehrt werden, bis die Position von currentSimulation (Futter) und Anthill unterschiedlich sind
  		while (currentSimulation->getSpielfeldArea(randx, randy) == tmpAnthill->position) {
 
-			int randx = 1 + std::rand() % (currentSimulation->Rows);	//Zufallszahl fuer Reihen
-			int randy = 1 + std::rand() % (currentSimulation->Colls);	//Zufallszahl fuer Spalten
+			int randx = (std::rand() % (currentSimulation->Rows));	//Zufallszahl fuer Reihen
+			int randy = (std::rand() % (currentSimulation->Colls));	//Zufallszahl fuer Spalten
 		}
 
 		Item* currentFood = new Futter(currentSimulation->getSpielfeldArea(randx, randy));

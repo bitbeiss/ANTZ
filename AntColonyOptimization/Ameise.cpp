@@ -42,6 +42,9 @@ void Ameise::whoAmI() {
 //Rückgabe des Area-Feldes wenn positiv, NULL-Pointer wenn kein Futter vorhanden
 Area *Ameise::check_food(Area* areaptr) {
 	
+	//Wenn es das Area nicht gibt/null ist: nullptr retournieren
+	if (areaptr == nullptr) return nullptr;
+
 	//Wenn die Item-Liste leer ist, gibt es kein Futter
 	if(areaptr->ItemList.empty() == true){
 		return nullptr;
@@ -58,13 +61,13 @@ Area *Ameise::check_food(Area* areaptr) {
 	return nullptr;
 }
 
-//Überprüft alle angrenzenden Felder auf Futter und gibt, wenn gefunden, den Area-Pointer mit Futter drauf zurück, ansonsten: nullptr
+//Ueberprueft alle angrenzenden Felder auf Futter und gibt, wenn gefunden, den Area-Pointer mit Futter drauf zurück, ansonsten: nullptr
 Area * Ameise::checkFoodSurrounding() {
 	//Gibt es Futter im Norden?
 	if(check_food(position->getRichtung("north")) != nullptr){
 		return position->getRichtung("north");
 	 }
-	//Gibt es Futter im Süden?
+	//Gibt es Futter im Sueden?
 	if (check_food(position->getRichtung("south")) != nullptr) {
 		return position->getRichtung("south");
 	}
@@ -97,8 +100,9 @@ std::string Ameise::get_direction_of_last_area() {
 	else if (backtrack_stack.top() == position->getRichtung("west")) { return "west"; }
 	else if (backtrack_stack.top() == position->getRichtung("east")) { return "east"; }
 	else {
-		std::cerr << "Fehler: Herkunftsrichtung nicht feststellbar. Ameise kann nicht bewegt werden.";
-		exit(1);
+		std::cerr << "Warnung: Herkunftsrichtung nicht feststellbar. Ameise startet ev. gerade vom Huegel weg. Default Orientierung: Nord."<<std::endl;
+		//exit(1);
+		return("south"); //default orientierung (von Sueden) nach Norden.
 	}
 }
 
@@ -163,7 +167,8 @@ void Ameise::move() {
 			else if (provenience == "west") chosenDirectionVector = directions_from_west;
 			else {
 				std::cerr << "Fehler: Richtungsvektor konnte nicht bestimmt werden. Ameise kann nicht bewegt werden.";
-				exit(1);
+				chosenDirectionVector = directions_from_south; //default Ausrichtung nach Norden, wenn nicht anders moeglich.
+				//exit(1);
 			}
 
 			//ToDo: Pheromonspureinfluss auf die Futtersuche Bewegung abbilden.
@@ -175,14 +180,19 @@ void Ameise::move() {
 			long double wurzel_faktor = 10;
 			long double einfluss_faktor = 0.7;
 			//Richtungen bereits an Ameisensicht angepasst (durch "chosenDirectionVector")
-			for (int j = 0; j < 3; j++) {
-				pheromon_levels[j] = this->position->getPheromone(this->position->getRichtung(chosenDirectionVector[j]));
+			for (int j = 0; j <= 3; j++) {
+				if (this->position->getRichtung(chosenDirectionVector[j]) != nullptr) {  //pruefen, ob es in die Richtung ueberhaupt ein gueltiges Area gibt.
+					pheromon_levels[j] = (long double) this->position->getPheromone(this->position->getRichtung(chosenDirectionVector[j]));
+				}
+				else pheromon_levels[j] = 0.0; //wenn kein gueltiges Feld in diese Richtung liegt, gibt es dort auch keine Pheromon...
+
 				//Daempfung beim Einfluss sehr grosser Pheromon Mengen
 				pheromon_levels_verrechnet[j] = sqrt(pheromon_levels[j] + wurzel_faktor)*einfluss_faktor;
 				sum += pheromon_levels_verrechnet[j];
 			}
+
 			//Die gefundenen Quantitaeten gewichten und in W-keiten umrechnen
-			for (int t = 0; t < 3; t++) {
+			for (int t = 0; t <= 3; t++) {
 				tmp = pheromon_levels_verrechnet[t];
 				//W-keiten auf 1 normieren
 				pheromon_levels_verrechnet[t] = (tmp/sum);
@@ -194,6 +204,15 @@ void Ameise::move() {
 			long double BackwardProbability = data.BackwardProbability*pheromon_levels_verrechnet[1]; //links
 			long double LeftProbability = data.LeftProbability*pheromon_levels_verrechnet[2];
 			long double RightProbability = pheromon_levels_verrechnet[3] = data.RightProbability*pheromon_levels_verrechnet[3]; //rechts
+
+			//W-keiten auf 1 normieren.
+			sum = 0;
+			sum = ForwardProbability + BackwardProbability + LeftProbability + RightProbability;
+			ForwardProbability = ForwardProbability / sum;
+			BackwardProbability = BackwardProbability / sum;
+			LeftProbability = LeftProbability / sum;
+			RightProbability = RightProbability / sum;
+
 
 			//Fall: Wir sind am Ameisenhuegel, der backtack_stack ist daher noch leer!
 			if (backtrack_stack.empty() == 1) {
@@ -210,27 +229,27 @@ void Ameise::move() {
 			else {
 				//So lange eine neue Richtung suchen, bis ein gueltiger Zeiger zurueckgegeben wird. (oder  erreicht ist)
 				double retry_counter = 0;
-				int randval=0;
+				long double randval = 0.0;
 				while (nextDirection == nullptr || data.MaximumMovementRetries > retry_counter) {
-					randval = rand() % 4;
+					randval = (rand() % 100)/100.0;
 
 					if (randval <= BackwardProbability) {
 						nextDirection = backtrack_stack.top();    // waere getRichtung(chosenDirectionVector[1]
 					}
 					//nach links
-					else if (randval <= LeftProbability + BackwardProbability && randval > BackwardProbability) {
+					else if (randval <= (LeftProbability + BackwardProbability) && randval > BackwardProbability) {
 						nextDirection = position->getRichtung(chosenDirectionVector[2]);
 					}
 					//nach rechts
-					else if (randval <= LeftProbability + RightProbability + BackwardProbability && randval > BackwardProbability + LeftProbability) {
+					else if (randval <= (LeftProbability + RightProbability + BackwardProbability) && randval > (BackwardProbability + LeftProbability)) {
 						nextDirection = position->getRichtung(chosenDirectionVector[3]);
 					}
 					//gerade aus
-					else if (randval > LeftProbability + RightProbability + BackwardProbability) {
+					else if (randval > (LeftProbability + RightProbability + BackwardProbability)) {
 						nextDirection = position->getRichtung(chosenDirectionVector[0]);
 					}
 					retry_counter++;
-					if (retry_counter == data.MaximumMovementRetries) std::cerr << "Warning: Maximum retries of ant movement reached. Ant will not move in this turn.";
+					if (retry_counter == data.MaximumMovementRetries) std::cerr << "Warning: Maximum retries of ant movement reached. Ant will not move in this turn."<<std::endl;
 				}
 			}
 		}
@@ -262,7 +281,7 @@ void Ameise::reduceLifeTime()
 	//Lebenszeit vorbei, die Ameise verschwindet von der Bildflaeche
 	else if(this->life_time < 0 || this->life_time == 0){
 		Simulation *currentSimulation = Simulation::getInstance(); //Aus Globaler Liste löschen
-		currentSimulation->Gesamt_Item_Liste.remove(this); //Aus dem Speicher löschen
+		currentSimulation->Gesamt_Item_Liste_entf.push_back(this); //Aus dem Speicher löschen (in Austragliste schreiben, spaeter loeschen)
 		std::cout << "Ameise gestorben!" << std::endl;
 		delete(this);
 		return;

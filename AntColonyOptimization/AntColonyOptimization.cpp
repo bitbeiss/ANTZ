@@ -19,7 +19,7 @@ const int verbose = 1;
 
 int main(void) {
 
-	//srand((unsigned)time(NULL));
+	srand((unsigned)time(NULL));
 
 	Parameter data;
 	Simulation *Welt = Simulation::getInstance();	//statischer Funktionsaufruf, Doppelpunkt verwenden!
@@ -34,7 +34,7 @@ int main(void) {
 	long double cycle_counter;
 	for (long double NumberOfSimulations_counter = 0; NumberOfSimulations_counter < data.NumberOfSimulations; NumberOfSimulations_counter++) {
 			for (cycle_counter = 0; cycle_counter < data.MaxCycles; cycle_counter++) {
-				if (verbose) std::cout << "Runde #:" << cycle_counter << std::endl;
+				if (verbose==1) std::cout << "Runde #:" << cycle_counter << std::endl;
 				Welt->ActAll();
 			}
 		std::cout << "cycles survived: " << cycle_counter << std::endl;

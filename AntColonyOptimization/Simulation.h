@@ -2,6 +2,7 @@
 //#include "Area.h"
 #include "Item.h"
 #include <vector>
+#include <algorithm>
 #include <list>
 #include "Singleton.h"
 #include <string>
@@ -18,6 +19,8 @@ public:
 	void ActAll();
 	
 	std::list<Item*> Gesamt_Item_Liste;
+	std::list<Item*> Gesamt_Item_Liste_tmp; //temporaere Liste zum Puffern von neuen Items waehrend Act-Iterationen
+	std::list<Item*> Gesamt_Item_Liste_entf; //Austragliste von Objekten die aus der globalen Liste nach Act-Iterationen entfernt werden muessen.
 	int Rows;
 	int Colls;
 	
