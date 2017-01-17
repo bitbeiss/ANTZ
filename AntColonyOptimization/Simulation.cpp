@@ -91,6 +91,10 @@ void Simulation::ActAll() {
 	//Erstellen des Listen-Iterators
 	std::list<Item*>::iterator it;
 
+	//Erstellen von Vektor-Iteratoren fuer Spielfeld/Areas
+	std::vector<std::vector<Area*> >::iterator vec_it;
+	std::vector<Area*>::iterator vec_iit;
+
 	//Die Gesaamt_Item_Liste der Simulation wird in folgender Reihenfolge abgearbeitet:
 	//1. Ameisenhügel (Erzeugen Ameisen, wenn Futter vorhanden)
 	//2. Area's (Lassen die Pheromonspur verdampfen, wenn vorhanden)
@@ -106,16 +110,18 @@ void Simulation::ActAll() {
 		if(typeid(*(*it))==typeid(Ameisenhuegel)){
 			Ameisenhuegel* tmpAnthill = dynamic_cast<Ameisenhuegel*>(*it);
 			tmpAnthill->act();
-			std::cout << "tmpAnthill->act()" << std::endl;
+			//std::cout << "tmpAnthill->act()" << std::endl;
 		}
 	}
 
-	//Die Gesamt_Item_Liste wird nach Area's durchsucht, für die jeweils act() aufgerufen wird
-	for (it = Gesamt_Item_Liste.begin(); it != Gesamt_Item_Liste.end(); ++it) {
-			if (typeid(*(*it)) == typeid(Area)) {
-			Area* tmpArea = dynamic_cast<Area*>(*it);
-			tmpArea->act();
-			std::cout << "tmpArea->act()" << std::endl;
+	//Das Spielfeld wird nach Area's durchsucht, für die jeweils act() aufgerufen wird
+	for (vec_it = Spielfeld.begin(); vec_it != Spielfeld.end(); ++vec_it) {
+		for (vec_iit = vec_it->begin(); vec_iit != vec_it->end(); ++vec_iit) {
+			if (typeid(*(*vec_iit)) == typeid(Area)) {
+				Area* tmpArea = dynamic_cast<Area*>(*vec_iit);
+				tmpArea->act();
+				std::cout << "tmpArea->act()" << std::endl;
+			}
 		}
 	}
 
@@ -124,7 +130,7 @@ void Simulation::ActAll() {
 		if (typeid(*(*it)) == typeid(Ameise)) {
 			Ameise* tmpAnt = dynamic_cast<Ameise*>(*it);
 			tmpAnt->act();
-			std::cout << "tmpAnt->act()" << std::endl;
+			//std::cout << "tmpAnt->act()" << std::endl;
 		}
 	}
 

@@ -100,7 +100,7 @@ std::string Ameise::get_direction_of_last_area() {
 	else if (backtrack_stack.top() == position->getRichtung("west")) { return "west"; }
 	else if (backtrack_stack.top() == position->getRichtung("east")) { return "east"; }
 	else {
-		std::cerr << "Warnung: Herkunftsrichtung nicht feststellbar. Ameise startet ev. gerade vom Huegel weg. Default Orientierung: Nord."<<std::endl;
+		//std::cerr << "Warnung: Herkunftsrichtung nicht feststellbar. Ameise startet ev. gerade vom Huegel weg. Default Orientierung: Nord."<<std::endl;
 		//exit(1);
 		return("south"); //default orientierung (von Sueden) nach Norden.
 	}
