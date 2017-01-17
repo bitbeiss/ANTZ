@@ -71,6 +71,7 @@ Item *Creator::createItem(std::string itemtype)
 			Ameise* currentAnt = dynamic_cast<Ameise*>(new Ameise(tmpAnthill->position));
 			currentAnt->life_time = data.Lifetime; //Lebensdauer der Ameise, Wert aus Parameter
 			
+			
 			currentSimulation->Gesamt_Item_Liste_tmp.push_back(currentAnt);	//Eintragen der Ameise in (tmp! nach der iteration uebertragen!) Globale Liste (Simulation)
 			//tmpAnthill->position->ItemList.push_back(currentAnt);		//Eintragen der Ameise in Item Liste (Area)
 

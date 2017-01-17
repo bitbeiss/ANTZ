@@ -86,7 +86,7 @@ Area * Simulation::getSpielfeldArea(int x, int y) {
 //Simulationskern - Aufruf der einzelnen act() Funktionen in bestimmter Reihenfolge
 void Simulation::ActAll() {
 
-	std::cout << "Anfang ActAll"<<std::endl;
+	//std::cout << "Anfang ActAll"<<std::endl;
 
 	//Erstellen des Listen-Iterators
 	std::list<Item*>::iterator it;
@@ -120,7 +120,7 @@ void Simulation::ActAll() {
 			if (typeid(*(*vec_iit)) == typeid(Area)) {
 				Area* tmpArea = dynamic_cast<Area*>(*vec_iit);
 				tmpArea->act();
-				std::cout << "tmpArea->act()" << std::endl;
+				//std::cout << "tmpArea->act()" << std::endl;
 			}
 		}
 	}
@@ -137,7 +137,7 @@ void Simulation::ActAll() {
 	//was-toDo: Sterbefaelle und andere zu loeschende Items aus der Gesamtliste entfernen ('-')
 	//Noetig, da in Iterationen die Liste nicht veraendert werden darf!
 	while (Gesamt_Item_Liste_entf.size() > 0) {
-		Gesamt_Item_Liste.remove(Gesamt_Item_Liste_tmp.front());
+		Gesamt_Item_Liste.remove(Gesamt_Item_Liste_entf.front());
 		Gesamt_Item_Liste_entf.pop_front(); //Element auch aus Austragliste austragen
 	}
 
@@ -148,7 +148,7 @@ void Simulation::ActAll() {
 		Gesamt_Item_Liste_tmp.pop_front(); //Element austragen
 	}
 
-	std::cout << "Ende ActAll" << std::endl;
+	//std::cout << "Ende ActAll" << std::endl;
 }
 
 //Standard Konstruktor

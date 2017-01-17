@@ -249,7 +249,7 @@ void Ameise::move() {
 						nextDirection = position->getRichtung(chosenDirectionVector[0]);
 					}
 					retry_counter++;
-					if (retry_counter == data.MaximumMovementRetries) std::cerr << "Warning: Maximum retries of ant movement reached. Ant will not move in this turn."<<std::endl;
+					//if (retry_counter == data.MaximumMovementRetries) std::cerr << "Warning: Maximum retries of ant movement reached. Ant will not move in this turn."<<std::endl;
 				}
 			}
 		}

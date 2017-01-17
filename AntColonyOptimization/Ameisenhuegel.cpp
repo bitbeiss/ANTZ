@@ -10,8 +10,8 @@
 void Ameisenhuegel::createAnt() {
 	Creator* currentCreator = Creator::getInstance();
 	Item* Ant = currentCreator->createItem("Ant");
-	Simulation* currentSimulation = Simulation::getInstance();
-	currentSimulation->Gesamt_Item_Liste.push_back(Ant);
+	//Simulation* currentSimulation = Simulation::getInstance();
+	//currentSimulation->Gesamt_Item_Liste_tmp.push_back(Ant); //hat bereits der Creator erledigt
 }
 
 //Gibt den Klassennamen aus
@@ -24,6 +24,7 @@ void Ameisenhuegel::whoAmI() {
 void Ameisenhuegel::act() {
 	if(Futterlager > 0){
 		createAnt();
+		//std::cout << "Ameisenhuegel hat neue Ameise erzeugt!" << std::endl;
 	}
 	else return;
 }
