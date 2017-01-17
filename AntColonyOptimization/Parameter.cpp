@@ -21,8 +21,8 @@ Parameter::Parameter() {
 	this->EnvironmentSizeRows = 4;
 	this->AnthillFood = 10;
 	this->FoodQuantity = 30;
-	this->MaxCycles = 30000000;
-	this->NumberOfSimulations=200;
+	this->MaxCycles = 600;
+	this->NumberOfSimulations=10;
 }
 
 Parameter::~Parameter() {

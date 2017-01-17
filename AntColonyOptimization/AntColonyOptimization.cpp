@@ -50,14 +50,15 @@ int main(void) {
 						futterzaehler += dynamic_cast<Futter*>(*it)->Naehrstoffe;
 					}
 				}
-				if (futterzaehler == 0 || ameisenzaehler == 0 || cycle_counter>data.MaxCycles) {
+				if (futterzaehler == 0 || ameisenzaehler == 0 || cycle_counter==(data.MaxCycles-1)) {
 					std::cout << "**************Simulation beendet********************" << std::endl;
 					std::cout << "Futter verbleibend: " << futterzaehler << std::endl;
 					std::cout << "Ameisen verbleibend: " << ameisenzaehler << std::endl;
-					std::cout << "Runden:" << cycle_counter << std::endl;
+					std::cout << "Runden ueberlebt:" << cycle_counter << std::endl;
+					break;
 				}
 			}
-		std::cout << "cycles survived: " << cycle_counter << std::endl;
+		//std::cout << "cycles survived: " << cycle_counter << std::endl;
 	}
 	return 0;
 }
