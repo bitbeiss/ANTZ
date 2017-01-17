@@ -25,6 +25,7 @@ void Ameisenhuegel::act() {
 	if(Futterlager > 0){
 		createAnt();
 		//std::cout << "Ameisenhuegel hat neue Ameise erzeugt!" << std::endl;
+		Futterlager--;
 	}
 	else return;
 }

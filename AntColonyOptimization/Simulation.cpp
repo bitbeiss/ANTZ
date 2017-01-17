@@ -19,6 +19,12 @@ Simulation* Simulation::getInstance() {
 	return _instance;
 }
 
+
+void Simulation::reset_instance() {
+	if (_instance != nullptr) delete _instance;
+	_instance = new Simulation();
+}
+
 //Erzeugt eine dynamische, Zeilen x Spalten Matrix aus Area-Elementen !Achtung: Singleton - Aufruf durch getInstance()!
 void Simulation::create_environment(int Zeilen=0, int Spalten=0) {
 

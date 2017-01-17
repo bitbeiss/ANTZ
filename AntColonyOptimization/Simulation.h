@@ -14,6 +14,7 @@ class Simulation
 public:
 	~Simulation();
 	static Simulation *getInstance();
+	void reset_instance();
 	void create_environment(int,int);
 	Area *getSpielfeldArea(int, int);
 	void ActAll();

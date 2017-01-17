@@ -8,7 +8,7 @@
 
 
 Parameter::Parameter() {
-	this->Lifetime = 50;
+	this->Lifetime = 20;  //was 50
 	this->FoodCapacity = 1;
 	this->PheromoneQuantity = 10;
 	this->PheromoneEvaporate = 1;
@@ -17,12 +17,14 @@ Parameter::Parameter() {
 	this->LeftProbability = 25;
 	this->BackwardProbability = 0;
 	this->MaximumMovementRetries = 500;
-	this->EnvironmentSizeCols = 4;
-	this->EnvironmentSizeRows = 4;
+
+	this->EnvironmentSizeCols = 15;  //was 4
+	this->EnvironmentSizeRows = 15;  //was 4
+
 	this->AnthillFood = 10;
 	this->FoodQuantity = 30;
-	this->MaxCycles = 600;
-	this->NumberOfSimulations=10;
+	this->MaxCycles = 1500;
+	this->NumberOfSimulations=100; //was 10
 }
 
 Parameter::~Parameter() {
