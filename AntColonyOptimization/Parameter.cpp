@@ -8,23 +8,26 @@
 
 
 Parameter::Parameter() {
-	this->Lifetime = 20;  //was 50
-	this->FoodCapacity = 1;
-	this->PheromoneQuantity = 10;
-	this->PheromoneEvaporate = 1;
+	this->Lifetime = 20;				//Lebenszeit einer Ameise in Runden
+	this->FoodCapacity = 1;				//Menge an Futter, die eine Ameise gleichzeitig transportieren kann
+	this->PheromoneQuantity = 10;		//Staerke der Pheromonspur, die von der Ameise pro Feld gesetzt wird.
+	this->PheromoneEvaporate = 1;		//Abnahme der Pheromonspur pro Runde
 	this->ForwardProbability = 50;
 	this->RightProbability = 25;
 	this->LeftProbability = 25;
-	this->BackwardProbability = 0;
-	this->MaximumMovementRetries = 500;
+	this->BackwardProbability = 0;		
+	this->MaximumMovementRetries = 500;	//Maximale Anzahl an neuerlichen Versuchen, wenn Bewegung der Ameise nicht moeglich ist.
 
-	this->EnvironmentSizeCols = 15;  //was 4
-	this->EnvironmentSizeRows = 15;  //was 4
+	this->EnvironmentSizeCols = 15;		//Spielfeld Spalten
+	this->EnvironmentSizeRows = 15;		//Spielfeld Zeilen
 
-	this->AnthillFood = 10;
-	this->FoodQuantity = 30;
+	this->NumberOfAnthills = 2;			//Anzahl der Ameisenhuegel
+	this->NumberOfFood = 3;				//Anzahl der Futterdepots
+
+	this->AnthillFood = 10;				//Startwert fuer Futter im Ameisenhuegel
+	this->FoodQuantity = 30;			//Futtereinheiten pro Depot
 	this->MaxCycles = 1500;
-	this->NumberOfSimulations=100; //was 10
+	this->NumberOfSimulations=100; 
 }
 
 Parameter::~Parameter() {

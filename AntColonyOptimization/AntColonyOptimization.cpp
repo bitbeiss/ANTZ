@@ -19,27 +19,34 @@ const int verbose = 0;
 
 int main(void) {
 	Parameter data;
+	Simulation *Welt = nullptr;
+	Creator *kp = nullptr;
+
+	std::cout << "Simulation #\t"<< "Futter verbleibend\t" << "Ameisen verbleibend\t" << "Runden ueberlebt" << std::endl;
 
 	for (long double NumberOfSimulations_counter = 0; NumberOfSimulations_counter < data.NumberOfSimulations; NumberOfSimulations_counter++) {
+		
 		srand((unsigned)time(NULL));
 
+		//Wenn die Welt nicht zum ersten mal erschaffen wird: vorher zuruecksetzen in Grundzustand
+		if (Welt != nullptr) {
+			Welt->reset_instance();
+		}
+
+		Welt = Simulation::getInstance();	//statischer Funktionsaufruf, Doppelpunkt verwenden!
+		//std::cout << "Pointer " << Welt << std::endl;
 		
-		Simulation *Welt = Simulation::getInstance();	//statischer Funktionsaufruf, Doppelpunkt verwenden!
-		Welt->reset_instance();
-		std::cout << "Pointer " << Welt << std::endl;
-		Welt->create_environment(data.EnvironmentSizeCols, data.EnvironmentSizeRows);
 
 		//Grundlegende Dinge im Ameisen Universum erschaffen...
-		Creator *kp = Creator::getInstance();			//statischer Funktionsaufruf, Doppelpunkt verwenden!
-		kp->createItem("Anthill");  //2x Ameisenhuegel erzeugen
-		kp->createItem("Anthill");
-		kp->createItem("Food");     //3x Food erzeugen
-		kp->createItem("Food");
-		kp->createItem("Food");
+		kp = Creator::getInstance();			//statischer Funktionsaufruf, Doppelpunkt verwenden!
+		Welt->create_environment(data.EnvironmentSizeCols, data.EnvironmentSizeRows);
 
-		long double cycle_counter = 0;
-		long double futterzaehler = 0;
-		long double ameisenzaehler = 0;
+		for(long int ah=0; ah < data.NumberOfAnthills;ah++) kp->createItem("Anthill");	//x Ameisenhuegel erzeugen
+		for (long int ah = 0; ah < data.NumberOfFood;ah++) kp->createItem("Food");		//x Food erzeugen
+
+		long int cycle_counter = 0;
+		long int futterzaehler = 0;
+		long int ameisenzaehler = 0;
 
 		for (cycle_counter = 0; cycle_counter < data.MaxCycles; cycle_counter++) {
 			srand((unsigned)time(NULL));
@@ -58,15 +65,23 @@ int main(void) {
 				}
 			}
 			if (futterzaehler == 0 || ameisenzaehler == 0 || cycle_counter == (data.MaxCycles - 1)) {
-				std::cout << "**************Simulation beendet********************" << std::endl;
-				std::cout << "Futter verbleibend: " << futterzaehler << std::endl;
-				std::cout << "Ameisen verbleibend: " << ameisenzaehler << std::endl;
-				std::cout << "Runden ueberlebt:" << cycle_counter << std::endl;
+				std::cout << "\t" << NumberOfSimulations_counter;
+				std::cout << "\t\t" << futterzaehler;
+				std::cout << "\t\t\t" << ameisenzaehler;
+				std::cout << "\t\t\t" << cycle_counter << std::endl;
 				break;
 			}
 		}
 		//std::cout << "cycles survived: " << cycle_counter << std::endl;
 	}
+
+	int c;
+	puts("Hit \"return\" to exit.");
+	do {
+		c = getchar();
+		putchar(c);
+	} while (c != '\n');
+
 	return 0;
 }
 

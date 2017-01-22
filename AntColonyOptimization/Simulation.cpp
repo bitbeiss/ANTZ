@@ -6,10 +6,12 @@
 #include "Ameisenhuegel.h"
 #include "Ameise.h"
 #include "Futter.h"
+#include "Creator.h"
 #include <list>
 #include <typeinfo>
 
 Simulation* Simulation::_instance = 0;
+
 
 //Gibt die aktuelle Instanz der Simulation zurück, bzw. Erzeugt diese beim ersten Aufruf (Singleton)
 Simulation* Simulation::getInstance() {
@@ -19,10 +21,35 @@ Simulation* Simulation::getInstance() {
 	return _instance;
 }
 
-
 void Simulation::reset_instance() {
-	if (_instance != nullptr) delete _instance;
-	_instance = new Simulation();
+	//Spielfeld zuruecksetzen
+	int rows = Spielfeld.size();
+
+	if (this->getInstance() != nullptr) {
+		for (int z = 0; z < rows; z++) {
+			int cols = Spielfeld[z].size();
+			for (int s = 0; s < cols; s++) {
+				if (Spielfeld[z][s] != nullptr) {
+					delete Spielfeld[z][s];
+				}
+			}
+		}
+
+		for (int v = 0; v < rows; v++) {
+			Spielfeld[v].resize(0);
+		}
+
+		this->Spielfeld.resize(0);
+
+		//instanz der Welt loeschen
+		if (this->getInstance != nullptr) {
+			delete this->_instance;
+			this->_instance = new Simulation();
+		}
+	}
+
+	//_instance = new Simulation();
+
 }
 
 //Erzeugt eine dynamische, Zeilen x Spalten Matrix aus Area-Elementen !Achtung: Singleton - Aufruf durch getInstance()!
@@ -77,7 +104,7 @@ void Simulation::create_environment(int Zeilen=0, int Spalten=0) {
 		}	
 	}
 
-std::cout << "Das Spielfeld der Groesse "<<Zeilen<<"x"<<Spalten<< " wurde erzeugt"<< std::endl;
+//std::cout << "Das Spielfeld der Groesse "<<Zeilen<<"x"<<Spalten<< " wurde erzeugt"<< std::endl;
 }
 
 //Destruktor

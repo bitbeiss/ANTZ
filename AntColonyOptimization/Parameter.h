@@ -5,21 +5,23 @@
 class Parameter
 {
 public:
-	double Lifetime;				//ant lifetime
+	long int Lifetime;			//ant lifetime
 	int FoodCapacity;			//maximum amount of food
-	long PheromoneQuantity;		//quantity of pheromone left by ant on each square during return to anthill
-	long PheromoneEvaporate;	//quantity of pheromone evaporating per round
+	long int PheromoneQuantity;		//quantity of pheromone left by ant on each square during return to anthill
+	long int PheromoneEvaporate;	//quantity of pheromone evaporating per round
 	int ForwardProbability;		//p of ant moving forward
 	int RightProbability;		//p of ant moving right
 	int LeftProbability;		//p of ant moving left
 	int BackwardProbability;	//p of ant moving backwards
-	double MaximumMovementRetries;	//maximum retries in case movement is not legal (exceeding playground boders)
+	int MaximumMovementRetries;	//maximum retries in case movement is not legal (exceeding playground boders)
 	int EnvironmentSizeCols;	//extension of playground in columns
 	int EnvironmentSizeRows;	//extension of playground in rows
 	int AnthillFood;			//amount of food stored in anthill at start-time
 	int FoodQuantity;			//amount of food placed somewhere on the playground at start-time
-	long double MaxCycles;		//maximum amount of simulation cycles to be executed during each individual run
-	long double NumberOfSimulations; //number of individual simulations comprising MaxCycles of individual cycles
+	long int MaxCycles;		//maximum amount of simulation cycles to be executed during each individual run
+	long int NumberOfSimulations; //number of individual simulations comprising MaxCycles of individual cycles
+	long int NumberOfAnthills;  //number of anthill instances
+	long int NumberOfFood;	//number of food depot instances
 
 	Parameter();
 	~Parameter();
